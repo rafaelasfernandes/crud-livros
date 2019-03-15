@@ -12,11 +12,11 @@ def index(request):
 
 def livro_list(request):
     livros = Livro.objects.order_by('titulo')
-    return render(request, 'livros/livro_list.html', {'livros':livros})
+    return render(request, 'livros/livro_list.html', {'livros': livros})
 
 def livro_detail(request, pk):
     livro = get_object_or_404(Livro, pk=pk)
-    return render(request, 'livros/livro_detail.html', {'livro':livro})
+    return render(request, 'livros/livro_detail.html', {'livro': livro})
 
 def livro_new(request):
     if request.method == "POST":
@@ -27,7 +27,7 @@ def livro_new(request):
             return redirect('livro_detail', pk=livro.pk)
     else:
         form = LivroForm()
-    return render(request, 'livros/livro_edit.html', {'form':form})
+    return render(request, 'livros/livro_edit.html', {'form': form})
 
 def livro_edit(request, pk):
     livro = get_object_or_404(Livro, pk=pk)
@@ -38,13 +38,13 @@ def livro_edit(request, pk):
             return redirect('livro_detail', pk=livro.pk)
     else:
         form = LivroForm(instance=livro)
-    return render(request, 'livros/livro_edit.html', {'form':form})
+    return render(request, 'livros/livro_edit.html', {'form': form})
 
 def livro_delete(request, pk):
-    livro = get_object_or_404
+    livro = get_object_or_404(Livro, pk=pk)
     if request.method == "POST":
         livro.delete()
         return redirect('livro_list')
     else:
         form = LivroForm(instance=livro)
-    return render(request, 'livros/livro_delete.html', {'livro':livro})
+    return render(request, 'livros/livro_delete.html', {'livro': livro})

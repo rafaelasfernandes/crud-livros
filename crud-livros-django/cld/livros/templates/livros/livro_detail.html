@@ -7,5 +7,10 @@
   <a class="btn btn-default" href="{% url 'livro_delete' pk=livro.pk %}">[Apagar]</a>
   {% endif %}
   <h2>{{livro.titulo}}</h2>
+  <p>Código: {{livro.codigo}}</p>
+  <p>Autor(es): {{livro.autor}} </p>
+  <p>ISBN: {{livro.ISBN}} </p>
+  <p>Editora: {{livro.editora}} </p>
+  <p>Ano: {{livro.ano|linebreaksbr}} </p>
 </div>
 {% endblock %}
