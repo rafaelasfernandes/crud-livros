@@ -1,8 +1,10 @@
+from django.shortcuts import render
 from livros import models
 from api_rest import serializers
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
 
 class LivroListServiceView(generics.ListCreateAPIView):
@@ -10,17 +12,32 @@ class LivroListServiceView(generics.ListCreateAPIView):
     serializer_class = serializers.LivroSerializer
 
 class CadastrarLivroServiceView(APIView):
+    serializer_class = serializers.LivroSerializer
 
     def post(self, request, format=None):
+        serializer = serializers.LivroSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.erros, status.HTTP_400_BAD_REQUEST)
 
-        codigo = request.data.get('codigo')
-        ISBN = request.data.get('ISBN')
-        titulo = request.data.get('titulo')
-        autor = request.data.get('autor')
-        ano = request.data.get('ano')
-        editora = request.data.get('editora')
+class AtualizarLivroServiceView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Livro.objects.all()
+    serializer_class = serializers.LivroSerializer
 
-        livro = models.Livro.objects.create(codigo = codigo, ISBN = ISBN, titulo = titulo, autor = autor, ano = ano, editora = editora)
+    def put(self, request, pk):
+        livro = models.Livro.objects.get(pk=pk)
+        serializer = serializers.LivroSerializer(livro, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = serializers.LivroSerializer(livro)
-        return Response(serializer.data)
+class ExcluirLivroServiceView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Livro.objects.all()
+    serializer_class = serializers.LivroSerializer
+
+    def delete(self, request, pk):
+        livro = models.Livro.objects.get(pk=pk)
+        livro.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
